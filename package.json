@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/EspelhoPolitico/backend#readme",
   "dependencies": {
+    "axios": "^0.15.3",
     "express": "^4.14.0",
     "mongodb": "^2.2.12",
     "mongoose": "^4.7.1",

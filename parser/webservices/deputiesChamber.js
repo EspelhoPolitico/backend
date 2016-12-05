@@ -9,23 +9,23 @@ let webServerUrl = 'http://www.camara.leg.br/SitCamaraWS/Deputados.asmx?wsdl';
 function updateDeputies() {
   soap.createClient(webServerUrl, function(err, client) {
     client.ObterDeputados({}, function(err, result) {
-      let deputados = result.ObterDeputadosResult.deputados.deputado;
+      let deputies = result.ObterDeputadosResult.deputados.deputado;
 
-      for (deputado of deputados) {
+      for (deputy of deputies) {
         Deputy.findOneAndUpdate({
-          cod: deputado.ideCadastro,
+          cod: deputy.ideCadastro,
         },{
-          annex: deputado.anexo,
-          cabinet: deputado.gabinete,
-          condition: deputado.condicao,
-          email: deputado.email,
-          fullName: deputado.nome.capitalize(),
-          gender: deputado.sexo.capitalize(),
-          name: deputado.nomeParlamentar.capitalize(),
-          party: deputado.partido,
-          photo: deputado.urlFoto,
-          state: deputado.uf,
-          telephone: deputado.fone,
+          annex: deputy.anexo,
+          cabinet: deputy.gabinete,
+          condition: deputy.condicao,
+          email: deputy.email,
+          fullName: deputy.nome.capitalize(),
+          gender: deputy.sexo.capitalize(),
+          name: deputy.nomeParlamentar.capitalize(),
+          party: deputy.partido,
+          photo: deputy.urlFoto,
+          state: deputy.uf,
+          telephone: deputy.fone,
         },{
           new: true,
           upsert: true
