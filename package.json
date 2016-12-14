@@ -1,18 +1,22 @@
 {
-  "name": "espelho-politico.backend",
+  "name": "espelho-politico",
   "version": "1.0.0",
   "description": "Project to help brazilian citizens discover what the parliamentarians are doing and judge their behaviors",
   "main": "index.js",
+  "engines": {
+    "node": "6.9.1"
+  },
   "scripts": {
-    "start": "node server/server.js",
-    "autostart": "nodemon server/server.js",
-    "test": "NODE_ENV=test mocha server/**/*.test.js",
-    "test-watch": "nodemon -x 'npm test'",
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "node server/server.js",
+    "client": "cd client && npm start",
+    "server:test": "NODE_ENV=test mocha server/**/*.test.js",
+    "client:test": "cd client && npm test",
     "parser": "node parser/parser.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/EspelhoPolitico/backend.git"
+    "url": "git+https://github.com/EspelhoPolitico/espelhopolitico.git"
   },
   "keywords": [
     "politics",
@@ -23,9 +27,9 @@
   "author": "Organização Espelho Politco",
   "license": "AGPL-3.0",
   "bugs": {
-    "url": "https://github.com/EspelhoPolitico/backend/issues"
+    "url": "https://github.com/EspelhoPolitico/espelhopolitico/issues"
   },
-  "homepage": "https://github.com/EspelhoPolitico/backend#readme",
+  "homepage": "https://github.com/EspelhoPolitico/espelhopolitico#readme",
   "dependencies": {
     "axios": "^0.15.3",
     "express": "^4.14.0",
@@ -34,6 +38,7 @@
     "soap": "^0.18.0"
   },
   "devDependencies": {
+    "concurrently": "3.1.0",
     "mocha": "^3.2.0",
     "nodemon": "^1.11.0"
   }

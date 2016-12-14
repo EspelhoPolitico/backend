@@ -1,22 +1,28 @@
 <!-- vscode-markdown-toc -->
-1. [Dependencies](#Dependencies)
-2. [Install](#Install)
-3. [Running Application](#RunningApplication)
-4. [Testing](#Testing)
+* 1. [Dependencies](#Dependencies)
+* 2. [Install Dependencies](#InstallDependencies)
+* 3. [Running Application](#RunningApplication)
+* 4. [Testing](#Testing)
+
+<!-- vscode-markdown-toc-config
+	numbering=true
+	autoSave=true
+	/vscode-markdown-toc-config -->
 <!-- /vscode-markdown-toc -->
 
-# Espelho Político - Backend
+# Espelho Político
 
 ##  1. <a name='Dependencies'></a>Dependencies
 
-- Node v6.9.1 (recommend use [nvm](https://github.com/creationix/nvm#install-script))
+- [Node](nodejs.org) v6.9.1 (recommend use [nvm](https://github.com/creationix/nvm#install-script))
+- [MongoDB](https://www.mongodb.com/)
 
-##  2. <a name='Install'></a>Install
+##  2. <a name='InstallDependencies'></a>Install Dependencies
 
 To install all node dependencies, execute the command:
 
 ```
-$ npm install
+$ npm i && cd client && npm i && cd ..
 ```
 
 ##  3. <a name='RunningApplication'></a>Running Application
@@ -27,30 +33,38 @@ If it is the first time running the application, it is necessary to run the pars
 $ npm run parser
 ```
 
-To run the server, execute the command:
+This application is composed by a client and a server.
+
+To run the server and the client simultaneously, execute the command:
 
 ```
 $ npm start
 ```
 
-If you prefer that the server restarts automatically when changes happens, execute the command:
+To run only the server, execute the command:
 
 ```
-$ npm run autostart
+$ npm run server
 ```
 
-After the server starts, access the site at http://localhost:3000/
+To run only the client, execute the command:
+
+```
+$ npm run client
+```
+
+The client starts on port 3000 and the server on port 3001.
 
 ##  4. <a name='Testing'></a>Testing
 
-To run the tests just once, execute the command:
+To run the client tests, execute the command:
 
 ```
-$ npm test
+$ npm run client:test
 ```
 
-If you prefer that the tests run automatically when changes happens, execute the command:
+To run the server tests, execute the command:
 
 ```
-$ npm run test-watch
+$ npm run server:test
 ```
