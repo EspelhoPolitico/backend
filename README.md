@@ -21,6 +21,12 @@ $ npm install
 
 ##  3. <a name='RunningApplication'></a>Running Application
 
+If it is the first time running the application, it is necessary to run the parser executing the command :
+
+```
+$ npm run parser
+```
+
 To run the server, execute the command:
 
 ```

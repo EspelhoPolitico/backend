@@ -1,10 +1,10 @@
 const axios = require('axios');
 
-const {Senator} = require('./../../server/models/senator');
+const { Senator } = require('./../../server/models/senator');
 
-let webServerUrl = 'http://legis.senado.leg.br/dadosabertos/senador/lista/atual';
+const webServerUrl = 'http://legis.senado.leg.br/dadosabertos/senador/lista/atual';
 
-function updateSenators() {
+let updateSenators = new Promise((resolve, reject) => {
   axios.get(webServerUrl).then((response) => {
     let senators = response
       .data
@@ -12,32 +12,34 @@ function updateSenators() {
       .Parlamentares
       .Parlamentar;
 
-    for (senator of senators) {
+    Promise.all(senators.map((senator) => {
       senator = senator.IdentificacaoParlamentar;
 
-      Senator.findOneAndUpdate({
+      return Senator.findOneAndUpdate({
         cod: senator.CodigoParlamentar,
       }, {
-          name: senator.NomeParlamentar,
-          fullName: senator.NomeCompletoParlamentar,
-          gender: senator.SexoParlamentar,
-          title: senator.FormaTratamento,
-          photo: senator.UrlFotoParlamentar,
-          webPage: senator.UrlPaginaParlamentar,
-          email: senator.EmailParlamentar,
-          party: senator.SiglaPartidoParlamentar,
-          state: senator.UfParlamentar,
-        }, {
-          new: true,
-          upsert: true
-        }).then((doc) => {
-          console.log(`Os dados de ${doc.name} foram atualizados com sucesso!`);
-        }).catch((error) => {
-          console.log(error);
-        });
-    }
-  });
-}
+        name: senator.NomeParlamentar,
+        fullName: senator.NomeCompletoParlamentar,
+        gender: senator.SexoParlamentar,
+        title: senator.FormaTratamento,
+        photo: senator.UrlFotoParlamentar,
+        webPage: senator.UrlPaginaParlamentar,
+        email: senator.EmailParlamentar,
+        party: senator.SiglaPartidoParlamentar,
+        state: senator.UfParlamentar,
+      }, {
+        new: true,
+        upsert: true
+      }).then((doc) => {
+        console.log(`Os dados de ${doc.name} foram atualizados com sucesso!`);
+        return Promise.resolve(doc);
+      }).catch((error) => {
+        console.log(error);
+        return Promise.reject(error);
+      });
+    })).then(promises => resolve(promises)).catch(error => reject(error));
+  }).catch(error => reject(error));
+});
 
 module.exports = {
   updateSenators,
