@@ -1,11 +1,10 @@
-const {ObjectID} = require('mongodb');
-const {mongoose} = require('./../db/mongoose');
+import {Deputy} from '../models/deputy';
+import {ObjectID} from 'mongodb';
+import {Senator} from '../models/senator';
+import {mongoose} from '../db/mongoose';
 
-const {Senator} = require('./../models/senator');
-const {Deputy} = require('./../models/deputy');
-
-const senators = [{
-  _id: new ObjectID,
+let senators = [{
+  _id: new ObjectID(),
   cod: 846,
   name: 'Aloysio Nunes Ferreira',
   fullName: 'Aloysio Nunes Ferreira Filho',
@@ -18,8 +17,8 @@ const senators = [{
   state: 'SP',
 }];
 
-const deputies = [{
-  _id: new ObjectID,
+let deputies = [{
+  _id: new ObjectID(),
   cod: 178980,
   annex: 4,
   cabinet: 533,
@@ -34,30 +33,21 @@ const deputies = [{
   telephone: '3215-5533',
 }];
 
-let populateDeputies = () => {
+function populateDeputies (done) {
   Deputy.remove({}).then(() => {
     return Deputy.insertMany(deputies);
-  })
-  .then((doc) => {
-    console.log(doc);
-  })
-  .catch((e) => console.log(e));
+  }).then(() => done());
 };
 
-let populateSenators = () => {
+function populateSenators (done) {
   Senator.remove({}).then(() => {
     return Senator.insertMany(senators);
-  })
-  .then((doc) => {
-    console.log(doc);
-    mongoose.connection.close();
-  })
-  .catch((e) => console.log(e));
+  }).then(() => done());
 };
 
 module.exports = {
   deputies,
+  senators,
   populateDeputies,
   populateSenators,
-  senators,
 };

@@ -1,11 +1,7 @@
-const {
-  deputies,
-  populateSenators,
-  populateDeputies,
-  senators,
-} = require('./../db/seed');
+import expect from 'expect';
 
-const {ObjectID} = require('mongodb');
-
-populateSenators();
-populateDeputies();
+describe('server.js', () => {
+  it('should validate server test configuration', () => {
+    expect(true).toBeTruthy()
+  });
+});
