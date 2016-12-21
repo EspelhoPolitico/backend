@@ -15,7 +15,7 @@ import {
 import { ObjectID } from 'mongodb';
 import expect from 'expect';
 import request from 'supertest';
-import server from './../server';
+import server from '../server';
 
 describe('Server', () => {
   it('should validate server test configuration', () => {
