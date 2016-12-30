@@ -8,6 +8,7 @@ export default class Navigation extends React.Component {
     return (
       <Menu>
         <Menu.Item name="espelho-político" as={IndexLink} to="/"/>
+        <Menu.Item name="deputados" as={Link} to="/deputies"/>
       </Menu>
     )
   }
