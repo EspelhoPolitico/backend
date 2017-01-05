@@ -1,7 +1,8 @@
 import * as ServerAPI from '../serverAPI';
 
+import { Loader, Menu } from 'semantic-ui-react';
+
 import DeputiesList from './DeputiesList';
-import { Menu } from 'semantic-ui-react';
 import React from 'react';
 
 export default class DeputyApp extends React.Component {
@@ -13,6 +14,7 @@ export default class DeputyApp extends React.Component {
       pageSize: 25,
       limitedDeputiesList: [],
       page: 1,
+      isLoading: true,
     };
 
     this.handleItemClick = this.handleItemClick.bind(this);
@@ -22,7 +24,7 @@ export default class DeputyApp extends React.Component {
     ServerAPI.getResource('deputies').then((deputies) => {
       let pageCount = Math.ceil(deputies.length / this.state.pageSize);
 
-      this.setState({ deputies, pageCount });
+      this.setState({ deputies, pageCount, isLoading: false });
       this.limitDeputies();
     }).catch((error) => {
       console.error(error);
@@ -31,6 +33,10 @@ export default class DeputyApp extends React.Component {
 
   componentDidMount() {
     this.loadDeputiesFromServer();
+  }
+
+  componentWillUpdate (nextProps, nextState) {
+    window.scrollTo(0, 0);
   }
 
   limitDeputies() {
@@ -51,6 +57,7 @@ export default class DeputyApp extends React.Component {
   render() {
     let {
       limitedDeputiesList,
+      isLoading,
       page,
       pageCount,
     } = this.state;
@@ -65,14 +72,24 @@ export default class DeputyApp extends React.Component {
       return items;
     }
 
-    return (
-      <div className="deputies">
-        <DeputiesList deputies={limitedDeputiesList} />
+    let loadedPage = () => {
+      if (isLoading) {
+        return (
+          <Loader active='true' size='big'>Carregando Informações...</Loader>
+        );
+      } else {
+        return(
+          <div className="deputies">
+            <DeputiesList deputies={limitedDeputiesList} />
 
-        <Menu pagination borderless>
-          {renderMenuItems()}
-        </Menu>
-      </div>
-    )
+            <Menu pagination borderless>
+              {renderMenuItems()}
+            </Menu>
+          </div>
+        )
+      }
+    }
+
+    return (loadedPage());
   }
 }
