@@ -1,4 +1,5 @@
 import Deputy from './Deputy';
+import { Item } from 'semantic-ui-react'
 import React from 'react';
 
 export default class DeputiesList extends React.Component {
@@ -12,9 +13,9 @@ export default class DeputiesList extends React.Component {
     };
 
     return (
-      <div className="deputies">
+      <Item.Group divided>
         {renderDeputies()}
-      </div>
+      </Item.Group>
     )
   }
 }

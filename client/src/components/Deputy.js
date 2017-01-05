@@ -1,3 +1,5 @@
+import { Icon, Item, Label } from 'semantic-ui-react'
+
 import React from 'react';
 
 export default class Deputy extends React.Component {
@@ -5,6 +7,7 @@ export default class Deputy extends React.Component {
     let {
       email,
       gender,
+      fullName,
       name,
       party,
       photo,
@@ -12,16 +15,29 @@ export default class Deputy extends React.Component {
       telephone,
     } = this.props;
 
+    let genderIcon = (gender === 'Masculino') ? 'male' : 'female';
+
     return (
-      <div>
-        <h1>{name}</h1>
-        <img src={photo} alt='deputy {name}'/>
-        <p>{party}</p>
-        <p>{state}</p>
-        <p>{telephone}</p>
-        <p>{email}</p>
-        <p>{gender}</p>
-      </div>
+      <Item>
+        <Item.Image size='small' shape='circular' src={photo} />
+        <Item.Content verticalAlign='middle'>
+          <Item.Header as='a'>
+            <Icon name={genderIcon}/>
+            {name}
+          </Item.Header>
+          <Item.Meta>
+            <span>{fullName}</span>
+          </Item.Meta>
+          <Item.Description>
+            <p>{telephone}</p>
+            <p>{email}</p>
+          </Item.Description>
+          <Item.Extra>
+            <Label>{party}</Label>
+            <Label>{state}</Label>
+          </Item.Extra>
+        </Item.Content>
+      </Item>
     );
   }
 }
