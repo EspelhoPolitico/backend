@@ -49,7 +49,7 @@ export default class DeputyApp extends React.Component {
   }
 
   handleItemClick(e, { name }) {
-    this.setState({ page: name }, () => {
+    this.setState({ page: parseInt(name, 10) }, () => {
       this.limitDeputies();
     });
   }
@@ -66,7 +66,17 @@ export default class DeputyApp extends React.Component {
       let items = [];
 
       for (let i = 1; i <= pageCount; i++) {
-        items.push(<Menu.Item key={i} name={i.toString()} active={page === i} onClick={this.handleItemClick}/>);
+        if (i === page) {
+          items.push(<Menu.Item key={i} active={true} disabled>{i}</Menu.Item>);
+        } else {
+          items.push(
+            <Menu.Item
+              key={i}
+              name={i.toString()}
+              onClick={this.handleItemClick}
+            />
+          );
+        }
       }
 
       return items;
@@ -75,7 +85,7 @@ export default class DeputyApp extends React.Component {
     let loadedPage = () => {
       if (isLoading) {
         return (
-          <Loader active='true' size='big'>Carregando Informações...</Loader>
+          <Loader active={true} size='big'>Carregando Informações...</Loader>
         );
       } else {
         return(
