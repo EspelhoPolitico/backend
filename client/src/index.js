@@ -9,7 +9,7 @@ import {
 } from 'react-router';
 
 import App from './components/App';
-import DeputiesList from './components/DeputiesList';
+import DeputyApp from './components/DeputyApp';
 import Home from './components/Home';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -18,7 +18,7 @@ ReactDOM.render(
   <Router history={hashHistory}>
     <Route path="/" component={App}>
       <IndexRoute component={Home}/>
-      <Route path="/deputies" component={DeputiesList}/>
+      <Route path="/deputies" component={DeputyApp}/>
     </Route>
   </Router>,
   document.getElementById('root')
