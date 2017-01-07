@@ -14,7 +14,6 @@ export default class DeputyApp extends React.Component {
     this.state = {
       deputies: [],
       pageSize: 25,
-      limitedDeputiesList: [],
       page: 1,
       isLoading: true,
       searchDeputy: '',
@@ -24,27 +23,21 @@ export default class DeputyApp extends React.Component {
     this.handleSearchDeputy = this.handleSearchDeputy.bind(this);
   }
 
+  componentDidMount() {
+    this.loadDeputiesFromServer();
+  }
+
   loadDeputiesFromServer() {
     ServerAPI.getResource('deputies').then((deputies) => {
-      this.setState({ deputies });
-      this.limitDeputies();
+      this.setState({ deputies, isLoading: false });
     }).catch((error) => {
       console.error(error);
     });
   }
 
-  componentDidMount () {
-    this.loadDeputiesFromServer();
-  }
+  filterDeuties(deputies, pageSize, page, searchDeputy) {
 
-  componentWillUpdate(nextProps, nextState) {
-    window.scrollTo(0, 0);
-  }
-
-  limitDeputies() {
-    let { deputies, pageSize, page, searchDeputy } = this.state;
-
-    let limitedDeputiesList = deputies.filter((deputy) => {
+    let filteredDeputies = deputies.filter((deputy) => {
       if (searchDeputy) {
         let name = Diacritics.remove(deputy.name).toLowerCase();
 
@@ -56,34 +49,36 @@ export default class DeputyApp extends React.Component {
       return true;
     });
 
-    let pageCount = Math.ceil(limitedDeputiesList.length / pageSize);
+    let pageCount = Math.ceil(filteredDeputies.length / pageSize);
     let start = pageSize * (page - 1);
     let end = pageSize * page;
 
-    limitedDeputiesList = limitedDeputiesList.slice(start, end);
+    filteredDeputies = filteredDeputies.slice(start, end);
 
-    this.setState({ limitedDeputiesList, pageCount, isLoading: false });
+    return ({ filteredDeputies, pageCount });
   }
 
   handlePageChange(page) {
-    this.setState({ page }, () => {
-      this.limitDeputies();
-    });
+    this.setState({ page });
   }
 
   handleSearchDeputy(searchDeputy) {
-    this.setState({ searchDeputy }, () => {
-      this.limitDeputies();
-    });
+    this.setState({ page: 1, searchDeputy });
   }
 
   render() {
     let {
-      limitedDeputiesList,
+      deputies,
       isLoading,
+      pageSize,
       page,
-      pageCount,
+      searchDeputy,
     } = this.state;
+
+    let {
+      filteredDeputies,
+      pageCount,
+    } = this.filterDeuties(deputies, pageSize, page, searchDeputy);
 
     let loadedPage = () => {
       if (isLoading) {
@@ -98,9 +93,13 @@ export default class DeputyApp extends React.Component {
               onChange={this.handleSearchDeputy}
               />
             <div className="deputies">
-              <DeputiesList deputies={limitedDeputiesList} />
+              <DeputiesList deputies={filteredDeputies} />
             </div>
-            <Pagination onPageChange={this.handlePageChange} pageCount={pageCount} page={page} />
+            <Pagination
+              onPageChange={this.handlePageChange}
+              page={page}
+              pageCount={pageCount}
+              />
           </div>
         )
       }
