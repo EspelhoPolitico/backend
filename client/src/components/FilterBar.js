@@ -11,7 +11,7 @@ export default class FilterBar extends React.Component {
   }
 
   handleChange (e, { value }) {
-    let searchDeputy = Diacritics.remove(value).toLowerCase()
+    let searchDeputy = Diacritics.remove(value).toLowerCase();
     this.props.onChange(searchDeputy);
   }
 

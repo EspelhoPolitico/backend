@@ -1,10 +1,10 @@
 import * as ServerAPI from '../serverAPI';
 
-import { Loader, Menu } from 'semantic-ui-react';
-
 import DeputiesList from './DeputiesList';
 import Diacritics from 'diacritics';
 import FilterBar from './FilterBar';
+import { Loader } from 'semantic-ui-react';
+import Pagination from './Pagination';
 import React from 'react';
 
 export default class DeputyApp extends React.Component {
@@ -20,7 +20,7 @@ export default class DeputyApp extends React.Component {
       searchDeputy: '',
     };
 
-    this.handleItemClick = this.handleItemClick.bind(this);
+    this.handlePageChange = this.handlePageChange.bind(this);
     this.handleSearchDeputy = this.handleSearchDeputy.bind(this);
   }
 
@@ -65,8 +65,8 @@ export default class DeputyApp extends React.Component {
     this.setState({ limitedDeputiesList, pageCount, isLoading: false });
   }
 
-  handleItemClick(e, { name }) {
-    this.setState({ page: parseInt(name, 10) }, () => {
+  handlePageChange(page) {
+    this.setState({ page }, () => {
       this.limitDeputies();
     });
   }
@@ -85,32 +85,6 @@ export default class DeputyApp extends React.Component {
       pageCount,
     } = this.state;
 
-    let renderPagination = () => {
-      let items = [];
-
-      for (let i = 1; i <= pageCount; i++) {
-        if (i === page) {
-          items.push(<Menu.Item key={i} active={true} disabled>{i}</Menu.Item>);
-        } else {
-          items.push(
-            <Menu.Item
-              key={i}
-              name={i.toString()}
-              onClick={this.handleItemClick}
-              />
-          );
-        }
-      }
-
-      if (items.length) {
-        return (
-          <Menu pagination borderless>
-            {items}
-          </Menu>
-        );
-      }
-    }
-
     let loadedPage = () => {
       if (isLoading) {
         return (
@@ -126,7 +100,7 @@ export default class DeputyApp extends React.Component {
             <div className="deputies">
               <DeputiesList deputies={limitedDeputiesList} />
             </div>
-            {renderPagination()}
+            <Pagination onPageChange={this.handlePageChange} pageCount={pageCount} page={page} />
           </div>
         )
       }
