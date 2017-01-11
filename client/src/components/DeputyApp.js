@@ -42,7 +42,11 @@ export default class DeputyApp extends React.Component {
         let name = Diacritics.remove(deputy.name).toLowerCase();
 
         if (name.indexOf(searchDeputy) < 0) {
-          return false;
+          let fullName = Diacritics.remove(deputy.fullName).toLowerCase();
+
+          if (fullName.indexOf(searchDeputy) < 0) {
+            return false;
+          }
         }
       }
 
@@ -59,6 +63,7 @@ export default class DeputyApp extends React.Component {
   }
 
   handlePageChange(page) {
+    window.scrollTo(0, 0);
     this.setState({ page });
   }
 
