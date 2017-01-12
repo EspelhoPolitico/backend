@@ -6,6 +6,7 @@ import FilterBar from './FilterBar';
 import { Loader } from 'semantic-ui-react';
 import Pagination from './Pagination';
 import React from 'react';
+import _ from 'lodash';
 
 export default class DeputyApp extends React.Component {
   constructor(props) {
@@ -16,7 +17,11 @@ export default class DeputyApp extends React.Component {
       pageSize: 25,
       page: 1,
       isLoading: true,
-      searchDeputy: '',
+      searchName: '',
+      searchState: 'any',
+      searchParty: 'any',
+      parties: [],
+      states: [],
     };
 
     this.handlePageChange = this.handlePageChange.bind(this);
@@ -29,22 +34,59 @@ export default class DeputyApp extends React.Component {
 
   loadDeputiesFromServer() {
     ServerAPI.getResource('deputies').then((deputies) => {
-      this.setState({ deputies, isLoading: false });
+      let states = [];
+      let parties = [];
+
+      deputies.forEach((deputy) => {
+        parties.push(deputy.party);
+        states.push(deputy.state);
+      })
+
+      deputies = _.sortBy(deputies, 'name');
+      parties = [...new Set(parties)].sort();
+      states = [...new Set(states)].sort();
+
+      this.setState({
+        deputies,
+        isLoading: false,
+        parties,
+        states
+      });
     }).catch((error) => {
       console.error(error);
     });
   }
 
-  filterDeuties(deputies, pageSize, page, searchDeputy) {
+  filterDeuties() {
+    let {
+      deputies,
+      page,
+      pageSize,
+      searchName,
+      searchParty,
+      searchState
+    } = this.state;
 
     let filteredDeputies = deputies.filter((deputy) => {
-      if (searchDeputy) {
+      if (searchState !== 'any') {
+        if (deputy.state.indexOf(searchState) < 0) {
+          return false;
+        }
+      }
+
+      if (searchParty !== 'any') {
+        if (deputy.party.indexOf(searchParty) < 0) {
+          return false;
+        }
+      }
+
+      if (searchName) {
         let name = Diacritics.remove(deputy.name).toLowerCase();
 
-        if (name.indexOf(searchDeputy) < 0) {
+        if (name.indexOf(searchName) < 0) {
           let fullName = Diacritics.remove(deputy.fullName).toLowerCase();
 
-          if (fullName.indexOf(searchDeputy) < 0) {
+          if (fullName.indexOf(searchName) < 0) {
             return false;
           }
         }
@@ -67,23 +109,25 @@ export default class DeputyApp extends React.Component {
     this.setState({ page });
   }
 
-  handleSearchDeputy(searchDeputy) {
-    this.setState({ page: 1, searchDeputy });
+  handleSearchDeputy(searchArgs) {
+    this.setState({ page: 1, ...searchArgs });
   }
 
   render() {
     let {
-      deputies,
       isLoading,
-      pageSize,
+      searchName,
       page,
-      searchDeputy,
+      parties,
+      searchParty,
+      states,
+      searchState,
     } = this.state;
 
     let {
       filteredDeputies,
       pageCount,
-    } = this.filterDeuties(deputies, pageSize, page, searchDeputy);
+    } = this.filterDeuties();
 
     let loadedPage = () => {
       if (isLoading) {
@@ -96,6 +140,11 @@ export default class DeputyApp extends React.Component {
             <FilterBar
               searchString='deputado'
               onChange={this.handleSearchDeputy}
+              partiesOptions={parties}
+              statesOptions={states}
+              searchName={searchName}
+              searchParty={searchParty}
+              searchState={searchState}
               />
             <div className="deputies">
               <DeputiesList deputies={filteredDeputies} />
