@@ -2,7 +2,7 @@ import { Icon, Item, Label } from 'semantic-ui-react'
 
 import React from 'react';
 
-export default class Deputy extends React.Component {
+export default class Parliamentary extends React.Component {
   render() {
     let {
       email,

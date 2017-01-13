@@ -1,19 +1,19 @@
 import * as ServerAPI from '../serverAPI';
 
-import DeputiesList from './DeputiesList';
 import Diacritics from 'diacritics';
 import FilterBar from './FilterBar';
 import { Loader } from 'semantic-ui-react';
 import Pagination from './Pagination';
 import React from 'react';
+import ResourceList from './ResourceList';
 import _ from 'lodash';
 
-export default class DeputyApp extends React.Component {
+export default class ParliamentApp extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      deputies: [],
+      parliamentarians: [],
       pageSize: 25,
       page: 1,
       isLoading: true,
@@ -25,29 +25,38 @@ export default class DeputyApp extends React.Component {
     };
 
     this.handlePageChange = this.handlePageChange.bind(this);
-    this.handleSearchDeputy = this.handleSearchDeputy.bind(this);
+    this.handleSearchParliamentary = this.handleSearchParliamentary.bind(this);
   }
 
-  componentDidMount() {
-    this.loadDeputiesFromServer();
+
+  componentWillMount() {
+    let resource = this.props.route.path;
+    this.loadResourceFromServer(resource);
   }
 
-  loadDeputiesFromServer() {
-    ServerAPI.getResource('deputies').then((deputies) => {
+  componentWillReceiveProps(nextProps) {
+    if (this.props.route.path !== nextProps.route.path) {
+      let resource = nextProps.route.path;
+      this.loadResourceFromServer(resource);
+    }
+  }
+
+  loadResourceFromServer(resource) {
+    ServerAPI.getResource(resource).then((parliamentarians) => {
       let states = [];
       let parties = [];
 
-      deputies.forEach((deputy) => {
-        parties.push(deputy.party);
-        states.push(deputy.state);
+      parliamentarians.forEach((parliamentary) => {
+        parties.push(parliamentary.party);
+        states.push(parliamentary.state);
       })
 
-      deputies = _.sortBy(deputies, 'name');
+      parliamentarians = _.sortBy(parliamentarians, 'name');
       parties = [...new Set(parties)].sort();
       states = [...new Set(states)].sort();
 
       this.setState({
-        deputies,
+        parliamentarians,
         isLoading: false,
         parties,
         states
@@ -57,9 +66,9 @@ export default class DeputyApp extends React.Component {
     });
   }
 
-  filterDeuties() {
+  filterParliamentarians() {
     let {
-      deputies,
+      parliamentarians,
       page,
       pageSize,
       searchName,
@@ -67,24 +76,24 @@ export default class DeputyApp extends React.Component {
       searchState
     } = this.state;
 
-    let filteredDeputies = deputies.filter((deputy) => {
+    let filteredParliamentarians = parliamentarians.filter((parliamentary) => {
       if (searchState !== 'any') {
-        if (deputy.state.indexOf(searchState) < 0) {
+        if (parliamentary.state.indexOf(searchState) < 0) {
           return false;
         }
       }
 
       if (searchParty !== 'any') {
-        if (deputy.party.indexOf(searchParty) < 0) {
+        if (parliamentary.party.indexOf(searchParty) < 0) {
           return false;
         }
       }
 
       if (searchName) {
-        let name = Diacritics.remove(deputy.name).toLowerCase();
+        let name = Diacritics.remove(parliamentary.name).toLowerCase();
 
         if (name.indexOf(searchName) < 0) {
-          let fullName = Diacritics.remove(deputy.fullName).toLowerCase();
+          let fullName = Diacritics.remove(parliamentary.fullName).toLowerCase();
 
           if (fullName.indexOf(searchName) < 0) {
             return false;
@@ -95,13 +104,13 @@ export default class DeputyApp extends React.Component {
       return true;
     });
 
-    let pageCount = Math.ceil(filteredDeputies.length / pageSize);
+    let pageCount = Math.ceil(filteredParliamentarians.length / pageSize);
     let start = pageSize * (page - 1);
     let end = pageSize * page;
 
-    filteredDeputies = filteredDeputies.slice(start, end);
+    filteredParliamentarians = filteredParliamentarians.slice(start, end);
 
-    return ({ filteredDeputies, pageCount });
+    return ({ filteredParliamentarians, pageCount });
   }
 
   handlePageChange(page) {
@@ -109,7 +118,7 @@ export default class DeputyApp extends React.Component {
     this.setState({ page });
   }
 
-  handleSearchDeputy(searchArgs) {
+  handleSearchParliamentary(searchArgs) {
     this.setState({ page: 1, ...searchArgs });
   }
 
@@ -124,10 +133,14 @@ export default class DeputyApp extends React.Component {
       searchState,
     } = this.state;
 
+    let resource = this.props.route.path;
+
     let {
-      filteredDeputies,
+      filteredParliamentarians,
       pageCount,
-    } = this.filterDeuties();
+    } = this.filterParliamentarians();
+
+    let resourceName = (resource === 'deputados') ? 'deputado' : 'senador';
 
     let loadedPage = () => {
       if (isLoading) {
@@ -138,16 +151,19 @@ export default class DeputyApp extends React.Component {
         return (
           <div>
             <FilterBar
-              searchString='deputado'
-              onChange={this.handleSearchDeputy}
+              searchString={resourceName}
+              onChange={this.handleSearchParliamentary}
               partiesOptions={parties}
               statesOptions={states}
               searchName={searchName}
               searchParty={searchParty}
               searchState={searchState}
               />
-            <div className="deputies">
-              <DeputiesList deputies={filteredDeputies} />
+            <div className={resource}>
+              <ResourceList
+                resource={filteredParliamentarians}
+                resourceName={resourceName}
+                />
             </div>
             <Pagination
               onPageChange={this.handlePageChange}

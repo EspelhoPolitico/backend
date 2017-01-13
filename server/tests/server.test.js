@@ -22,12 +22,12 @@ describe('Server', () => {
     expect(true).toBeTruthy()
   });
 
-  describe('GET /api/deputies', () => {
+  describe('GET /api/deputados', () => {
     beforeEach(populateDeputies);
 
     it('should return all deputies', (done) => {
       request(server)
-        .get('/api/deputies')
+        .get('/api/deputados')
         .expect(Success.OK)
         .end((error, response) => {
           if (error) {
@@ -39,10 +39,10 @@ describe('Server', () => {
     });
   });
 
-  describe('GET /api/deputies/:_id', () => {
+  describe('GET /api/deputados/:_id', () => {
     it('should return the required deputy by _id', (done) => {
       request(server)
-        .get(`/api/deputies/${deputies[1]._id}`)
+        .get(`/api/deputados/${deputies[1]._id}`)
         .expect(Success.OK)
         .end((error, response) => {
           if (error) {
@@ -56,7 +56,7 @@ describe('Server', () => {
     it('should return NOT FOUND if deputy is not found', (done) => {
       let validButInexistentId = new ObjectID();
       request(server)
-        .get(`/api/deputies/${validButInexistentId}`)
+        .get(`/api/deputados/${validButInexistentId}`)
         .expect(ClientError.NotFound)
         .end(done);
     })
@@ -65,7 +65,7 @@ describe('Server', () => {
       let invalidId = 'abc123';
 
       request(server)
-        .get(`/api/deputies/${invalidId}`)
+        .get(`/api/deputados/${invalidId}`)
         .expect(ClientError.BadRequest)
         .end(done);
     })
@@ -74,10 +74,10 @@ describe('Server', () => {
   describe('Senators', () => {
     beforeEach(populateSenators);
 
-    describe('GET /api/senators', () => {
+    describe('GET /api/senadores', () => {
       it('should return all senators', (done) => {
         request(server)
-          .get('/api/senators')
+          .get('/api/senadores')
           .expect(Success.OK)
           .end((error, response) => {
             if (error) {
@@ -89,10 +89,10 @@ describe('Server', () => {
       });
     });
 
-    describe('GET /api/senators/:_id', () => {
+    describe('GET /api/senadores/:_id', () => {
       it('should return the required senator by _id', (done) => {
         request(server)
-          .get(`/api/senators/${senators[1]._id}`)
+          .get(`/api/senadores/${senators[1]._id}`)
           .expect(Success.OK)
           .end((error, response) => {
             if (error) {
@@ -107,7 +107,7 @@ describe('Server', () => {
         let validButInexistentId = new ObjectID();
 
         request(server)
-          .get(`/api/senators/${validButInexistentId}`)
+          .get(`/api/senadores/${validButInexistentId}`)
           .expect(ClientError.NotFound)
           .end(done);
       })
@@ -116,7 +116,7 @@ describe('Server', () => {
         let invalidId = 'abc123';
 
         request(server)
-          .get(`/api/senators/${invalidId}`)
+          .get(`/api/senadores/${invalidId}`)
           .expect(ClientError.BadRequest)
           .end(done);
       })

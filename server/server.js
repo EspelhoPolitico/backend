@@ -23,7 +23,7 @@ server.use(bodyParser.json());
 
 let router = express.Router();
 
-router.route('/deputies').get((request, response) => {
+router.route('/deputados').get((request, response) => {
   Deputy.find().then((deputies) => {
     response.status(Success.OK).send(deputies);
   }).catch((error) => {
@@ -31,7 +31,7 @@ router.route('/deputies').get((request, response) => {
   });
 });
 
-router.route('/deputies/:_id').get((request, response) => {
+router.route('/deputados/:_id').get((request, response) => {
   let _id = request.params._id;
 
   if (!ObjectID.isValid(_id)) {
@@ -49,7 +49,7 @@ router.route('/deputies/:_id').get((request, response) => {
   });
 });
 
-router.route('/senators').get((request, response) => {
+router.route('/senadores').get((request, response) => {
   Senator.find().then((senators) => {
     response.status(Success.OK).send(senators);
   }).catch((error) => {
@@ -57,7 +57,7 @@ router.route('/senators').get((request, response) => {
   });
 });
 
-router.route('/senators/:_id').get((request, response) => {
+router.route('/senadores/:_id').get((request, response) => {
   let _id = request.params._id;
 
   if (!ObjectID.isValid(_id)) {
