@@ -36,6 +36,7 @@ export default class ParliamentApp extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.route.path !== nextProps.route.path) {
+      this.setState({isLoading: true});
       let resource = nextProps.route.path;
       this.loadResourceFromServer(resource);
     }
