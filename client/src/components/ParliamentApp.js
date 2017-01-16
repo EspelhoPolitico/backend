@@ -28,7 +28,6 @@ export default class ParliamentApp extends React.Component {
     this.handleSearchParliamentary = this.handleSearchParliamentary.bind(this);
   }
 
-
   componentWillMount() {
     let resource = this.props.route.path;
     this.loadResourceFromServer(resource);
@@ -75,16 +74,12 @@ export default class ParliamentApp extends React.Component {
 
   filterParliamentarians(parliamentarians, searchName, searchParty, searchState) {
     return parliamentarians.filter((parliamentary) => {
-      if (searchState !== 'any') {
-        if (parliamentary.state.indexOf(searchState) < 0) {
-          return false;
-        }
+      if (searchState !== 'any' && parliamentary.state !== searchState) {
+        return false;
       }
 
-      if (searchParty !== 'any') {
-        if (parliamentary.party.indexOf(searchParty) < 0) {
-          return false;
-        }
+      if (searchParty !== 'any' && parliamentary.party !== searchParty) {
+        return false;
       }
 
       if (searchName) {
