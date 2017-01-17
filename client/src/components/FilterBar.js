@@ -1,3 +1,5 @@
+import '../styles/components/FilterBar.css';
+
 import { Button, Input, Menu, Select } from 'semantic-ui-react'
 
 import Diacritics from 'diacritics';
@@ -58,38 +60,44 @@ export default class FilterBar extends React.Component {
     partiesOptions.unshift({ text: 'Partido', value: 'any' });
 
     return (
-
-      <Menu secondary>
-        <Menu.Menu position="right">
-          <Menu.Item>
-            <Input
-              icon="search"
-              onChange={this.handleNameChange}
-              placeholder={`Pesquisar ${searchString}`}
-              ref="searchName"
-              value={searchName}
-              />
-            <Select
-              onChange={this.handlePartyChange}
-              options={partiesOptions}
-              search={true}
-              value={searchParty}
-              />
-            <Select
-              onChange={this.handleStateChange}
-              options={statesOptions}
-              search={true}
-              value={searchState}
-              />
-            <Button
-              fluid
-              color="red"
-              onClick={this.handleCleanFilters}
-              >
-              Limpar Filtro
+      <Menu stackable secondary id="filterBar">
+        <Menu.Item fitted='horizontally'>
+          <Input
+            fluid
+            icon="search"
+            onChange={this.handleNameChange}
+            placeholder={`Pesquisar ${searchString}`}
+            ref="searchName"
+            value={searchName}
+            />
+        </Menu.Item>
+        <Menu.Item fitted='horizontally'>
+          <Select
+            fluid
+            onChange={this.handlePartyChange}
+            options={partiesOptions}
+            search={true}
+            value={searchParty}
+            />
+        </Menu.Item>
+        <Menu.Item fitted='horizontally'>
+          <Select
+            fluid
+            onChange={this.handleStateChange}
+            options={statesOptions}
+            search={true}
+            value={searchState}
+            />
+        </Menu.Item>
+        <Menu.Item fitted='horizontally'>
+          <Button
+            fluid
+            color="red"
+            onClick={this.handleCleanFilters}
+            >
+            Limpar Filtro
             </Button>
-          </Menu.Item>
-        </Menu.Menu>
+        </Menu.Item>
       </Menu>
     );
   }

@@ -158,12 +158,11 @@ export default class ParliamentApp extends React.Component {
               searchParty={searchParty}
               searchState={searchState}
               />
-            <div className={resource}>
-              <ResourceList
-                resource={resourcePerPage}
-                resourceName={resourceName}
-                />
-            </div>
+            <ResourceList
+              className={resource}
+              resource={resourcePerPage}
+              resourceName={resourceName}
+              />
             <Pagination
               onPageChange={this.handlePageChange}
               currentPage={currentPage}

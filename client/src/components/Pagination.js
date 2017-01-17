@@ -48,7 +48,7 @@ export default class Pagination extends React.Component {
 
       if (items.length) {
         return (
-          <Menu pagination>
+          <Menu pagination size='small'>
             {currentPage > firstPage &&
               <Menu.Item
                 link
