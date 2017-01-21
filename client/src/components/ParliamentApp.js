@@ -83,6 +83,7 @@ export default class ParliamentApp extends React.Component {
       }
 
       if (searchName) {
+        searchName = Diacritics.remove(searchName).toLowerCase();
         let name = Diacritics.remove(parliamentary.name).toLowerCase();
 
         if (name.indexOf(searchName) < 0) {
@@ -154,7 +155,6 @@ export default class ParliamentApp extends React.Component {
               onChange={this.handleSearchParliamentary}
               partiesOptions={parties}
               statesOptions={states}
-              searchName={searchName}
               searchParty={searchParty}
               searchState={searchState}
               />

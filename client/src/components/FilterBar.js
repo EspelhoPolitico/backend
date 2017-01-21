@@ -1,9 +1,10 @@
 import '../styles/components/FilterBar.css';
+import 'semantic-ui-css/semantic.css';
 
-import { Button, Input, Menu, Select } from 'semantic-ui-react'
+import { Button, Menu, Select } from 'semantic-ui-react'
 
-import Diacritics from 'diacritics';
 import React from 'react';
+import _ from 'lodash';
 
 export default class FilterBar extends React.Component {
   constructor(props) {
@@ -16,6 +17,8 @@ export default class FilterBar extends React.Component {
   }
 
   handleCleanFilters(e, {value}) {
+    this.refs.searchName.value = '';
+
     this.props.onChange({
       searchName: '',
       searchParty: 'any',
@@ -23,9 +26,8 @@ export default class FilterBar extends React.Component {
     });
   }
 
-  handleNameChange(e, {value}) {
-    let searchName = Diacritics.remove(value).toLowerCase();
-
+  handleNameChange(e) {
+    let searchName = this.refs.searchName.value
     this.props.onChange({ searchName });
   }
 
@@ -40,7 +42,6 @@ export default class FilterBar extends React.Component {
   render() {
     let {
       partiesOptions,
-      searchName,
       searchParty,
       searchState,
       searchString,
@@ -62,14 +63,15 @@ export default class FilterBar extends React.Component {
     return (
       <Menu stackable secondary id="filterBar">
         <Menu.Item fitted='horizontally'>
-          <Input
-            fluid
-            icon="search"
-            onChange={this.handleNameChange}
-            placeholder={`Pesquisar ${searchString}`}
-            ref="searchName"
-            value={searchName}
-            />
+          <div className="ui icon input">
+            <input
+              type="text"
+              onChange={_.debounce(this.handleNameChange, 150, { maxWait: 600 })}
+              placeholder={`Pesquisar ${searchString}`}
+              ref="searchName"
+              />
+            <i className="search icon"></i>
+          </div>
         </Menu.Item>
         <Menu.Item fitted='horizontally'>
           <Select
