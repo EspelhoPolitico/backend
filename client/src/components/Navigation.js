@@ -6,10 +6,10 @@ import React from 'react';
 export default class Navigation extends React.Component {
   render() {
     return (
-      <Menu>
-        <Menu.Item name="espelho-político" as={IndexLink} to="/"/>
-        <Menu.Item name="deputados" as={Link} to="/deputados"/>
-        <Menu.Item name="senadores" as={Link} to="/senadores"/>
+      <Menu fixed="top">
+        <Menu.Item name="espelho-político" as={IndexLink} to="/" />
+        <Menu.Item name="deputados" as={Link} to="/deputados" />
+        <Menu.Item name="senadores" as={Link} to="/senadores" />
       </Menu>
     )
   }

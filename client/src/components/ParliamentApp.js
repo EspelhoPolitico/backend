@@ -15,7 +15,7 @@ export default class ParliamentApp extends React.Component {
     this.state = {
       parliamentarians: [],
       pageSize: 25,
-      page: 1,
+      currentPage: 1,
       isLoading: true,
       searchName: '',
       searchState: 'any',
@@ -28,7 +28,6 @@ export default class ParliamentApp extends React.Component {
     this.handleSearchParliamentary = this.handleSearchParliamentary.bind(this);
   }
 
-
   componentWillMount() {
     let resource = this.props.route.path;
     this.loadResourceFromServer(resource);
@@ -36,7 +35,13 @@ export default class ParliamentApp extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.route.path !== nextProps.route.path) {
-      this.setState({isLoading: true});
+      this.setState({
+        isLoading: true,
+        currentPage: 1,
+        searchName: '',
+        searchState: 'any',
+        searchParty: 'any',
+      });
       let resource = nextProps.route.path;
       this.loadResourceFromServer(resource);
     }
@@ -67,27 +72,14 @@ export default class ParliamentApp extends React.Component {
     });
   }
 
-  filterParliamentarians() {
-    let {
-      parliamentarians,
-      page,
-      pageSize,
-      searchName,
-      searchParty,
-      searchState
-    } = this.state;
-
-    let filteredParliamentarians = parliamentarians.filter((parliamentary) => {
-      if (searchState !== 'any') {
-        if (parliamentary.state.indexOf(searchState) < 0) {
-          return false;
-        }
+  filterParliamentarians(parliamentarians, searchName, searchParty, searchState) {
+    return parliamentarians.filter((parliamentary) => {
+      if (searchState !== 'any' && parliamentary.state !== searchState) {
+        return false;
       }
 
-      if (searchParty !== 'any') {
-        if (parliamentary.party.indexOf(searchParty) < 0) {
-          return false;
-        }
+      if (searchParty !== 'any' && parliamentary.party !== searchParty) {
+        return false;
       }
 
       if (searchName) {
@@ -104,44 +96,50 @@ export default class ParliamentApp extends React.Component {
 
       return true;
     });
-
-    let pageCount = Math.ceil(filteredParliamentarians.length / pageSize);
-    let start = pageSize * (page - 1);
-    let end = pageSize * page;
-
-    filteredParliamentarians = filteredParliamentarians.slice(start, end);
-
-    return ({ filteredParliamentarians, pageCount });
   }
 
-  handlePageChange(page) {
+  resourcePerPage(resource, pageSize, currentPage) {
+    let start = pageSize * (currentPage - 1);
+    let end = pageSize * currentPage;
+
+    return resource.slice(start, end);
+  }
+
+  handlePageChange(currentPage) {
     window.scrollTo(0, 0);
-    this.setState({ page });
+    this.setState({ currentPage });
   }
 
   handleSearchParliamentary(searchArgs) {
-    this.setState({ page: 1, ...searchArgs });
+    this.setState({ currentPage: 1, ...searchArgs });
   }
 
   render() {
     let {
       isLoading,
       searchName,
-      page,
+      currentPage,
+      pageSize,
+      parliamentarians,
       parties,
       searchParty,
       states,
       searchState,
     } = this.state;
-
     let resource = this.props.route.path;
-
-    let {
-      filteredParliamentarians,
-      pageCount,
-    } = this.filterParliamentarians();
-
     let resourceName = (resource === 'deputados') ? 'deputado' : 'senador';
+    let filteredParliamentarians = this.filterParliamentarians(
+      parliamentarians,
+      searchName,
+      searchParty,
+      searchState,
+    );
+    let resourcePerPage = this.resourcePerPage(
+      filteredParliamentarians,
+      pageSize,
+      currentPage,
+    );
+    let numberOfPages = Math.ceil(filteredParliamentarians.length / pageSize);
 
     let loadedPage = () => {
       if (isLoading) {
@@ -160,16 +158,15 @@ export default class ParliamentApp extends React.Component {
               searchParty={searchParty}
               searchState={searchState}
               />
-            <div className={resource}>
-              <ResourceList
-                resource={filteredParliamentarians}
-                resourceName={resourceName}
-                />
-            </div>
+            <ResourceList
+              className={resource}
+              resource={resourcePerPage}
+              resourceName={resourceName}
+              />
             <Pagination
               onPageChange={this.handlePageChange}
-              page={page}
-              pageCount={pageCount}
+              currentPage={currentPage}
+              numberOfPages={numberOfPages}
               />
           </div>
         )

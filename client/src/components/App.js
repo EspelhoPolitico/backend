@@ -1,14 +1,15 @@
 import '../styles/App.css';
 
+import { Container } from 'semantic-ui-react';
 import Navigation from './Navigation';
 import React from 'react';
 
-function App (props) {
+function App(props) {
   return (
-    <div className="App">
-      <Navigation/>
+    <Container className="App">
+      <Navigation />
       {props.children}
-    </div>
+    </Container>
   );
 }
 
