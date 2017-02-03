@@ -1,0 +1,7 @@
+#filterBar .item {
+  padding-top: 1px;
+}
+
+#filterBar input {
+  width: 15rem !important;
+}
